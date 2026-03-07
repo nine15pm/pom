@@ -1,0 +1,49 @@
+# TTS (Text-to-Speech) full-run config for PomTTS pretraining.
+# Assumption for this setup: /workspace is a persistent networked volume.
+# accelerate launch --config_file configs/runpod_accelerate.yaml --module train.tts_trainer --config configs/tts.yaml
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_vocab_size: 6561
+
+data:
+  json_path: "/workspace/datasets/InstructS2S-200K/en/stage1b"
+  shuffle_shards: true
+  shuffle_seed: 42
+  max_seq_len: 2500
+
+training:
+  # Global batch = batch_size * grad_accum * num_gpus should be 32 to match the paper recipe.
+  batch_size: 4
+  grad_accum: 8
+  precision: "bf16"
+  num_workers: 12
+  dataloader_prefetch_factor: 2
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 5.0e-4
+  max_grad_norm: 10
+  read_length: 3
+  write_length: 10
+  # TTS (PomTTS pretraining) uses 5 epochs in the paper.
+  # Plain-English steps math:
+  # - If TTS has ~422,856 samples,
+  # - and global batch is 32 samples per optimizer step,
+  # - then one epoch is 422,856 / 32 = 13,214.25 steps.
+  # - Five epochs is 13,214.25 * 5 = 66,071.25 steps.
+  # - We round up so we do not under-train: steps = 66,072.
+  steps: 66072
+  warmup_ratio: 0.03
+  profile: false
+  debug_sample_ids: false
+  save_every: 6000
+  keep_last_n_checkpoints: 6
+  output_dir: "/workspace/outputs/pom/stage1b"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "tts-1"

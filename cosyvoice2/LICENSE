@@ -1,0 +1,14 @@
+Third-Party Attribution
+=======================
+
+Code under `cosyvoice2/` includes vendored source from:
+
+1. FunAudioLLM/CosyVoice
+   - https://github.com/FunAudioLLM/CosyVoice
+   - License: Apache License 2.0
+
+2. shivammehta25/Matcha-TTS
+   - https://github.com/shivammehta25/Matcha-TTS
+   - License: Apache License 2.0
+
+Original license headers are retained in vendored files.

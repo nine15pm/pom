@@ -1,0 +1,42 @@
+# Dry-run config for SU pipeclean (keeps base config untouched).
+# Goal: fast end-to-end sanity check with minimal risk of empty data filtering.
+# accelerate launch --config_file configs/runpod_accelerate.yaml --module train.su_trainer --config configs/su_dryrun.yaml
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_encoder_id: "openai/whisper-large-v3"
+  speech_encoder_cache: "/workspace/cache/whisper"
+  frame_stack: 5
+  adapter_hidden_dim: 2048
+
+data:
+  json_path: "/workspace/datasets/InstructS2S-200K/en/stage1a"
+  audio_root: "/workspace/datasets/InstructS2S-200K/en"
+  max_wer: null
+  shuffle_shards: true
+  shuffle_seed: 42
+
+training:
+  batch_size: 8
+  grad_accum: 4
+  precision: "bf16"
+  num_workers: 12
+  dataloader_prefetch_factor: 2
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 5.0e-5
+  max_grad_norm: 10
+  steps: 100
+  warmup_ratio: 0.03
+  profile: true
+  debug_sample_ids: true
+  keep_last_n_checkpoints: 1
+  output_dir: "/workspace/outputs/pom/stage1a_dryrun"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "su-dryrun-H100"

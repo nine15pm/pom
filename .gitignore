@@ -1,0 +1,26 @@
+/data/
+.claude/
+.codex/
+.cursor/
+.venv/
+/wandb/
+uv.lock
+pom.egg-info/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

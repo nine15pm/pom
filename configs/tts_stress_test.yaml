@@ -1,0 +1,37 @@
+# Stress-test config for TTS to find max sequence length before OOM.
+# Uses a synthetic shard of 8 identical long-sequence samples.
+# accelerate launch --config_file configs/runpod_accelerate.yaml --module train.tts_trainer --config configs/tts_stress_test.yaml
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_vocab_size: 6561
+
+data:
+  json_path: "/workspace/datasets/InstructS2S-200K/en/stage1b_stress_test"
+  shuffle_shards: false
+
+training:
+  batch_size: 8
+  grad_accum: 4
+  precision: "bf16"
+  num_workers: 0
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 5.0e-4
+  max_grad_norm: 10
+  read_length: 3
+  write_length: 10
+  steps: 2
+  warmup_ratio: 0.03
+  profile: false
+  debug_sample_ids: false
+  keep_last_n_checkpoints: 1
+  output_dir: "/workspace/outputs/pom/stage1b_stress_test"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "tts-stress-test"

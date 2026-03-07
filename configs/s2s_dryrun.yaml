@@ -1,0 +1,46 @@
+# Dry-run config for S2S pipeclean (keeps base config untouched).
+# Goal: fast end-to-end sanity check for bootstrap + frozen-thinker + talker loss wiring.
+# accelerate launch --config_file configs/runpod_accelerate.yaml --module train.s2s_trainer --config configs/s2s_dryrun.yaml
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_encoder_id: "openai/whisper-large-v3"
+  speech_encoder_cache: "/workspace/cache/whisper"
+  frame_stack: 5
+  adapter_hidden_dim: 2048
+  speech_vocab_size: 6561
+
+data:
+  json_path: "/workspace/datasets/InstructS2S-200K/en/stage2"
+  audio_root: "/workspace/datasets/InstructS2S-200K/en"
+  shuffle_shards: true
+  shuffle_seed: 42
+
+training:
+  batch_size: 2
+  grad_accum: 16
+  precision: "bf16"
+  num_workers: 12
+  dataloader_prefetch_factor: 2
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 1.0e-3
+  max_grad_norm: 10
+  read_length: 3
+  write_length: 10
+  steps: 2000
+  warmup_ratio: 0.03
+  thinker_checkpoint: "/workspace/outputs/pom/stage1a/checkpoints/final"
+  tts_checkpoint: "/workspace/outputs/pom/stage1b/checkpoints/final"
+  profile: true
+  debug_sample_ids: true
+  keep_last_n_checkpoints: 1
+  output_dir: "/workspace/outputs/pom/stage2_dryrun"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "s2s-dryrun-H100"

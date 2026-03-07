@@ -1,0 +1,3 @@
+{"id": "bad-units", "conversation": [{"from": "human", "text": "u0"}, {"from": "gpt", "text": "a0", "unit": "<1><x><2>"}]}
+{"id": "bad-range", "conversation": [{"from": "human", "text": "u0"}, {"from": "gpt", "text": "a0", "unit": "<6561>"}]}
+{"id": "no-assistant", "conversation": [{"from": "human", "text": "u0"}, {"from": "human", "text": "u1"}]}

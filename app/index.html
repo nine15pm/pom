@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pom Voice Assistant</title>
+    <link rel="stylesheet" href="/app/styles.css" />
+  </head>
+  <body>
+    <main class="layout">
+      <header class="header">
+        <h1>Pom Voice Assistant</h1>
+        <p id="status" class="status">Status: initializing</p>
+      </header>
+
+      <section class="controls" aria-label="controls">
+        <button id="record-btn" type="button" disabled>Hold To Talk</button>
+        <button id="reset-btn" type="button" disabled>New Conversation</button>
+      </section>
+
+      <section class="transcript" aria-label="transcript">
+        <h2>Conversation</h2>
+        <ol id="turn-list"></ol>
+      </section>
+    </main>
+    <script type="module" src="/app/app.js"></script>
+  </body>
+</html>

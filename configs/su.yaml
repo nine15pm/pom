@@ -1,0 +1,46 @@
+# SU (Speech Understanding) full-run config (paper-faithful global batch on 1 GPU).
+# Assumption for this setup: /workspace is a persistent networked volume.
+# accelerate launch --config_file configs/runpod_accelerate.yaml --module train.su_trainer --config configs/su.yaml
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_encoder_id: "openai/whisper-large-v3"
+  speech_encoder_cache: "/workspace/cache/whisper"
+  frame_stack: 5
+  adapter_hidden_dim: 2048
+
+data:
+  json_path: "/workspace/datasets/InstructS2S-200K/en/stage1a"
+  audio_root: "/workspace/datasets/InstructS2S-200K/en"
+  max_wer: null
+  shuffle_shards: true
+  shuffle_seed: 42
+
+training:
+  # Global batch = batch_size * grad_accum * num_gpus should be 32 to match reference paper
+  batch_size: 8
+  grad_accum: 4
+  precision: "bf16"
+  num_workers: 12
+  dataloader_prefetch_factor: 2
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 5.0e-5
+  max_grad_norm: 10
+  # SuDataset expands 200k conversations into ~422,856 user->assistant training pairs.
+  # For 3 epochs at global batch 32: 422,856 * 3 / 32 = 39,642.75 -> ceil to 39,643 steps.
+  steps: 39643
+  warmup_ratio: 0.03
+  profile: false
+  debug_sample_ids: false
+  save_every: 4000
+  keep_last_n_checkpoints: 6
+  output_dir: "/workspace/outputs/pom/stage1a"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "su-2"

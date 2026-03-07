@@ -1,0 +1,38 @@
+# Overfit config for TTS (tiny dataset, longer steps).
+# accelerate launch --config_file configs/runpod_accelerate.yaml --module train.tts_trainer --config configs/tts_overfit.yaml
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_vocab_size: 6561
+
+data:
+  # Real-row Stage I(b) overfit shard directory.
+  json_path: "/workspace/datasets/InstructS2S-200K/en/stage1b_overfit"
+  shuffle_shards: true
+  shuffle_seed: 42
+
+training:
+  batch_size: 1
+  grad_accum: 1
+  precision: "bf16"
+  num_workers: 12
+  dataloader_prefetch_factor: 2
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 1.0e-3
+  max_grad_norm: 10
+  read_length: 3
+  write_length: 10
+  steps: 1200
+  profile: false
+  debug_sample_ids: true
+  save_every: 100
+  output_dir: "/workspace/outputs/pom/stage1b_overfit"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "tts-overfit"

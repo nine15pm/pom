@@ -1,0 +1,94 @@
+:root {
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #1f2933;
+  --muted: #52606d;
+  --line: #d9e2ec;
+  --accent: #006d77;
+  --accent-hover: #005a63;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+  color: var(--text);
+  background: radial-gradient(circle at top right, #dff3f5 0%, var(--bg) 45%);
+}
+
+.layout {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 24px 16px 40px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.status {
+  margin-top: 8px;
+  color: var(--muted);
+  min-height: 1.2rem;
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+button {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--text);
+  padding: 10px 14px;
+  font-size: 0.95rem;
+}
+
+button:enabled {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #ffffff;
+}
+
+button:enabled:hover {
+  background: var(--accent-hover);
+}
+
+button.recording {
+  background: #9b2226;
+  border-color: #9b2226;
+}
+
+.transcript {
+  margin-top: 24px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.transcript h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+}
+
+#turn-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+#turn-list li {
+  margin-bottom: 6px;
+  line-height: 1.35;
+}
+
+#turn-list li:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,67 @@
+# Canonical runtime config for Phase A one-turn offline inference.
+# Why: keep one explicit source of truth for model loading and generation behavior.
+
+models:
+  # Default path: load packaged HF artifacts via from_pretrained.
+  artifact_mode: "hf"  # allowed: "hf", "checkpoint"
+
+  # Canonical local cache root that contains one full model bundle:
+  #   <cache_dir>/thinker
+  #   <cache_dir>/talker
+  #   <cache_dir>/tokenizer
+  #   <cache_dir>/decoder
+  cache_dir: "~/.cache/pom"
+
+  # Optional cache locations for model/tokenizer downloads.
+  base_cache_dir: null
+  speech_encoder_cache_dir: null
+
+  # Shared speech vocab contract for Talker.
+  speech_vocab_size: 6561
+
+  # Checkpoint-only settings for explicit fallback loading path.
+  # Keep null in normal hf mode; set this mapping only when artifact_mode=checkpoint.
+  # checkpoint:
+  #   base_model_id: "Qwen/Qwen3-0.6B"
+  #   speech_encoder_id: "openai/whisper-large-v3"
+  #   frame_stack: 5
+  #   projector_hidden_dim: 2048
+  checkpoint: null
+
+tokenizer:
+  # Optional tokenizer source override (checkpoint mode only).
+  source: null
+
+  # Phase A decision: use Qwen chat template with thinking disabled.
+  enable_thinking: false
+
+  # Assistant generation stop token for Thinker decode.
+  # If null, runtime should resolve a tokenizer default (typically <|im_end|>) and validate it.
+  assistant_stop_token: null
+
+generation:
+  text:
+    # Thinker text decode settings.
+    max_new_tokens: 1024
+    temperature: 0.7
+    top_p: 0.9
+
+  speech:
+    # Talker speech decode settings.
+    max_new_tokens: 2048
+    temperature: 0.8
+    top_p: 0.95
+    repetition_penalty: 1.1
+    max_repeat_run: 30
+    read_length: 3
+    write_length: 10
+
+runtime:
+  # Phase A contract requires GPU runtime.
+  device: "cuda"
+  dtype: "bf16"  # fixed: "bf16" only
+  seed: 42
+
+output:
+  # Optional output settings for decoded waveform artifacts.
+  output_wav_path: "/workspace/outputs/pom/inference/output.wav"

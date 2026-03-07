@@ -1,0 +1,37 @@
+# Overfit config for SU (tiny dataset, longer steps).
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_encoder_id: "openai/whisper-large-v3"
+  speech_encoder_cache: "/workspace/cache/whisper"
+  frame_stack: 5
+  adapter_hidden_dim: 2048
+
+data:
+  json_path: "/workspace/datasets/echoxdialogues/overfit.json"
+  audio_root: "/workspace/datasets/echoxdialogues"
+  max_wer: null
+
+training:
+  batch_size: 1
+  grad_accum: 1
+  precision: "bf16"
+  num_workers: 12
+  dataloader_prefetch_factor: 2
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 1.0e-4
+  max_grad_norm: 10
+  steps: 300
+  profile: false
+  debug_sample_ids: true
+  save_every: 100
+  output_dir: "/workspace/outputs/pom/stage1a_overfit"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "su-overfit"

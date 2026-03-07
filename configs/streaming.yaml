@@ -1,0 +1,23 @@
+# Canonical runtime config for Phase B backend WebSocket serving.
+# Why: keep server settings separate from offline inference config.
+
+# Reuse the existing validated inference config for model/runtime loading.
+inference_config_path: "configs/inference.yaml"
+
+streaming:
+  # Keep only the most recent conversation turns to bound latency and memory.
+  max_history_turns: 10
+
+server:
+  # Bind host/port for uvicorn WebSocket serving.
+  host: "0.0.0.0"
+  port: 8000
+
+  # Keep one explicit WS endpoint for browser clients.
+  websocket_path: "/ws"
+
+  # Transport frame limit for incoming websocket text frames.
+  ws_max_frame_bytes: 30000000
+
+  # App-level limit for decoded raw request audio bytes.
+  max_audio_bytes: 20000000

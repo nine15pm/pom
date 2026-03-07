@@ -1,0 +1,17 @@
+# Accelerate config template for Runpod.
+compute_environment: LOCAL_MACHINE
+distributed_type: MULTI_GPU
+num_machines: 1
+machine_rank: 0
+num_processes: 1 # Set this to the number of GPUs on the pod
+gpu_ids: all
+mixed_precision: bf16
+downcast_bf16: "no"
+same_network: true
+main_training_function: main
+rdzv_backend: static
+use_cpu: false
+debug: false
+tpu_use_cluster: false
+tpu_use_sudo: false
+tpu_env: []

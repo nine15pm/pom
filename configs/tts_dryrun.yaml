@@ -1,0 +1,40 @@
+# Dry-run config for TTS pipeclean (keeps base config untouched).
+# Goal: fast end-to-end sanity check for data + loss wiring.
+# accelerate launch --config_file configs/runpod_accelerate.yaml --module train.tts_trainer --config configs/tts_dryrun.yaml
+
+model:
+  id: "Qwen/Qwen3-0.6B"
+  cache: "/workspace/cache/hf"
+  speech_vocab_size: 6561
+
+data:
+  json_path: "/workspace/datasets/InstructS2S-200K/en/stage1b"
+  shuffle_shards: true
+  shuffle_seed: 42
+  max_seq_len: 2500
+
+training:
+  batch_size: 4
+  grad_accum: 8
+  precision: "bf16"
+  num_workers: 12
+  dataloader_prefetch_factor: 2
+  dataloader_persistent_workers: false
+  dataloader_pin_memory: true
+  dataloader_non_blocking: true
+  seed: 42
+  lr: 5.0e-4
+  max_grad_norm: 10
+  read_length: 3
+  write_length: 10
+  steps: 40
+  warmup_ratio: 0.03
+  profile: true
+  debug_sample_ids: true
+  keep_last_n_checkpoints: 1
+  output_dir: "/workspace/outputs/pom/stage1b_dryrun"
+
+wandb:
+  enabled: true
+  project: "pom"
+  run_name: "tts-dryrun-H100"
